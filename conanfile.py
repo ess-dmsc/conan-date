@@ -5,7 +5,7 @@ from conans import ConanFile, CMake, tools
 import os
 
 
-class LibnameConan(ConanFile):
+class DateConan(ConanFile):
     name = "date"
     version = "2.4"
     description = "Date and time tools included the C++20 working draft"
