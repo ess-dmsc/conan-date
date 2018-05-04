@@ -25,7 +25,8 @@ class DateConan(ConanFile):
     build_subfolder = "build_subfolder"
 
     build_requires = (
-        "cmake_installer/3.10.0@conan/stable"
+        "cmake_installer/3.10.0@conan/stable",
+        "libcurl/7.56.1@bincrafters/stable"
     )
 
     def source(self):
@@ -38,7 +39,6 @@ class DateConan(ConanFile):
     def configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_DATE_TESTING"] = "OFF"
-        cmake.definitions["USE_SYSTEM_TZ_DB"] = "ON"
         cmake.configure(source_folder=self.source_subfolder, build_folder=self.build_subfolder)
         return cmake
 
