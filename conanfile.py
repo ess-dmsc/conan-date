@@ -19,29 +19,25 @@ class LibnameConan(ConanFile):
 
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
+    default_options = "shared=True"
 
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
     build_requires = "cmake_installer/3.10.0@conan/stable"
 
-    #requires = (
-    #    "OpenSSL/[>=1.0.2l]@conan/stable",
-    #    "zlib/1.2.11@conan/stable"
-    #)
-
     def source(self):
         source_url = "https://github.com/HowardHinnant/date"
         tools.get("{0}/archive/v{1}.tar.gz".format(source_url, self.version))
         extracted_dir = self.name + "-" + self.version
 
-        #Rename to "source_subfolder" is a convention to simplify later steps
         os.rename(extracted_dir, self.source_subfolder)
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.definitions["ENABLE_DATE_TESTING"] = "OFF"
+        cmake.definitions["USE_SYSTEM_TZ_DB"] = "ON"
+        cmake.configure(source_folder=self.source_subfolder, build_folder=self.build_subfolder)
         return cmake
 
     def build(self):
