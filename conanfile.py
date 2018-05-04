@@ -3,6 +3,7 @@
 
 from conans import ConanFile, CMake, tools
 import os
+import shutil
 
 
 class DateConan(ConanFile):
@@ -24,8 +25,7 @@ class DateConan(ConanFile):
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
-    build_requires = (
-        "cmake_installer/3.10.0@conan/stable",
+    requires = (
         "libcurl/7.56.1@bincrafters/stable"
     )
 
@@ -35,6 +35,11 @@ class DateConan(ConanFile):
         extracted_dir = self.name + "-" + self.version
 
         os.rename(extracted_dir, self.source_subfolder)
+
+        os.rename(os.path.join(self.source_subfolder, "CMakeLists.txt"),
+                  os.path.join(self.source_subfolder, "CMakeLists_original.txt"))
+        shutil.copy("CMakeLists.txt",
+        os.path.join(self.source_subfolder, "CMakeLists.txt"))
 
     def configure_cmake(self):
         cmake = CMake(self)
