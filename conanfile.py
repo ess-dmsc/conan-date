@@ -13,7 +13,7 @@ class DateConan(ConanFile):
     homepage = "https://github.com/HowardHinnant/date"
     license = "MIT"
 
-    exports = ["LICENSE.md"]
+    exports = ["LICENSE.md", "FindDate.cmake"]
     exports_sources = ["CMakeLists.txt"]
     generators = "cmake"
 
@@ -24,7 +24,9 @@ class DateConan(ConanFile):
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
-    build_requires = "cmake_installer/3.10.0@conan/stable"
+    build_requires = (
+        "cmake_installer/3.10.0@conan/stable"
+    )
 
     def source(self):
         source_url = "https://github.com/HowardHinnant/date"
@@ -55,6 +57,7 @@ class DateConan(ConanFile):
         self.copy(pattern="*.a", dst="lib", keep_path=False)
         self.copy(pattern="*.so*", dst="lib", keep_path=False)
         self.copy(pattern="*.dylib", dst="lib", keep_path=False)
+        self.copy("FindDate.cmake", ".", ".")
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
