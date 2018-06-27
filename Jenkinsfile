@@ -6,28 +6,16 @@ conan_pkg_channel = "testing"
 
 images = [
   'centos7': [
-    'name': 'essdmscdm/centos7-build-node:1.1.0',
-    'sh': 'sh'
-  ],
-  'centos7-gcc6': [
-    'name': 'essdmscdm/centos7-gcc6-build-node:2.2.0',
-    'sh': '/usr/bin/scl enable rh-python35 devtoolset-6 -- /bin/bash'
+    'name': 'essdmscdm/centos7-build-node:3.0.0',
+    'sh': '/usr/bin/scl enable devtoolset-6 -- /bin/bash -e'
   ],
   'debian9': [
-  'name': 'essdmscdm/debian9-build-node:1.1.0',
-  'sh': 'sh'
+    'name': 'essdmscdm/debian9-build-node:2.0.0',
+    'sh': 'bash -e'
   ],
-  'fedora25': [
-    'name': 'essdmscdm/fedora25-build-node:1.1.0',
-    'sh': 'sh'
-  ],
-  'ubuntu1604': [
-    'name': 'essdmscdm/ubuntu16.04-build-node:2.4.0',
-    'sh': 'sh'
-  ],
-  'ubuntu1710': [
-    'name': 'essdmscdm/ubuntu17.10-build-node:2.1.1',
-    'sh': 'sh'
+  'ubuntu1804': [
+    'name': 'essdmscdm/ubuntu18.04-build-node:1.1.0',
+    'sh': 'bash -e'
   ]
 ]
 
@@ -227,4 +215,3 @@ node {
   // Delete workspace when build is done.
   cleanWs()
 }
-
