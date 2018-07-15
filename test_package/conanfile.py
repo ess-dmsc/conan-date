@@ -11,7 +11,7 @@ class TestPackageConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure(source_dir=self.source_folder, build_dir="./")
         cmake.build()
 
     def test(self):
