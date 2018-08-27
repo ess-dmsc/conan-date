@@ -13,7 +13,6 @@ class DateConan(ConanFile):
     url = "https://github.com/ess-dmsc/date"
     description = "Date and time tools included the C++20 working draft"
 
-
     src_version = "2.4"
     src_url = "https://github.com/HowardHinnant/date"
     # SHA256 Checksum for this versioned release (.tar.gz)
@@ -38,8 +37,10 @@ class DateConan(ConanFile):
     # The temporary build diirectory
     build_dir = "./%s/build" % folder_name
 
-
-    default_options = "shared=True"
+    default_options = (
+        "shared=True",
+        "OpenSSL:darwin_ssl=False"
+    )
     generators = "cmake"
 
     def configure(self):
