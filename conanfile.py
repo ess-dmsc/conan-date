@@ -39,7 +39,7 @@ class DateConan(ConanFile):
 
     default_options = (
         "shared=True",
-        "OpenSSL:darwin_ssl=False"
+        "libcurl:darwin_ssl=False"
     )
     generators = "cmake"
 
