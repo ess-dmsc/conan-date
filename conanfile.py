@@ -37,14 +37,13 @@ class DateConan(ConanFile):
     # The temporary build diirectory
     build_dir = "./%s/build" % folder_name
 
-    default_options = (
-        "shared=True",
-        "libcurl:darwin_ssl=False"
-    )
+    default_options = ("shared=True",)
     generators = "cmake"
 
     def configure(self):
         self.requires.add("libcurl/7.56.1@bincrafters/stable", private=False)
+        if self.settings.os == "Macos":
+            self.options["libcurl"].darwin_ssl = False
 
     def source(self):
         tools.download(
