@@ -25,7 +25,9 @@ class DateConan(ConanFile):
 
     settings = "os", "arch", "compiler", "build_type"
     requires = (
-        "libcurl/7.56.1@bincrafters/stable"
+        "libcurl/7.56.1@bincrafters/stable",
+        "OpenSSL/1.0.2n@conan/stable",
+        "zlib/1.2.11@conan/stable"
     )
     options = {"shared": [True, False]}
 
@@ -84,4 +86,3 @@ class DateConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
-
