@@ -7,7 +7,7 @@ import shutil
 
 
 class DateConan(ConanFile):
-    version="2.4"
+    version = "2.4"
     name = "date"
     license = "MIT"
     url = "https://github.com/ess-dmsc/date"
