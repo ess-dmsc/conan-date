@@ -18,4 +18,5 @@ target_link_libraries(${PROJECT_NAME}
     ${DATE_LIBRARIES}
     ${OpenSSL_LIBRARIES}
     ${ZLIB_LIBRARIES}
+    ${CMAKE_DL_LIBS}
     )
