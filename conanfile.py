@@ -7,12 +7,11 @@ import shutil
 
 
 class DateConan(ConanFile):
-    version="2.4"
+    version = "2.4"
     name = "date"
     license = "MIT"
     url = "https://github.com/ess-dmsc/date"
     description = "Date and time tools included the C++20 working draft"
-
 
     src_version = "2.4"
     src_url = "https://github.com/HowardHinnant/date"
@@ -25,7 +24,9 @@ class DateConan(ConanFile):
 
     settings = "os", "arch", "compiler", "build_type"
     requires = (
-        "libcurl/7.56.1@bincrafters/stable"
+        "libcurl/7.56.1@bincrafters/stable",
+        "OpenSSL/1.0.2n@conan/stable",
+        "zlib/1.2.11@conan/stable"
     )
     options = {"shared": [True, False]}
 
@@ -36,12 +37,13 @@ class DateConan(ConanFile):
     # The temporary build diirectory
     build_dir = "./%s/build" % folder_name
 
-
-    default_options = "shared=True"
+    default_options = ("shared=True",)
     generators = "cmake"
 
     def configure(self):
         self.requires.add("libcurl/7.56.1@bincrafters/stable", private=False)
+        if self.settings.os == "Macos":
+            self.options["libcurl"].darwin_ssl = False
 
     def source(self):
         tools.download(
@@ -84,4 +86,3 @@ class DateConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
-

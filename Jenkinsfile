@@ -197,23 +197,19 @@ def get_macos_pipeline() {
         stage("macOS: Package") {
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings date:build_type=Release \
-            --options date:shared=False \
-            --build=outdated"
+            --options date:shared=False"
 
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings date:build_type=Release \
-            --options date:shared=True \
-            --build=outdated"
+            --options date:shared=True"
 
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings date:build_type=Debug \
-            --options date:shared=False \
-            --build=outdated"
+            --options date:shared=False"
 
           sh "conan create . ${conan_user}/${conan_pkg_channel} \
             --settings date:build_type=Debug \
-            --options date:shared=True \
-            --build=outdated"
+            --options date:shared=True"
         }  // stage
 
         stage("macOS: Upload") {
