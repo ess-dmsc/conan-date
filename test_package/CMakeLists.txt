@@ -8,13 +8,14 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
 
 find_package(date REQUIRED)
-find_package(Threads)
+find_package(OpenSSL REQUIRED)
+find_package(ZLIB REQUIRED)
 
 file(GLOB SOURCE_FILES *.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME}
     ${DATE_LIBRARIES}
-    ${CMAKE_DL_LIBS}
-    Threads::Threads
+    ${OpenSSL_LIBRARIES}
+    ${ZLIB_LIBRARIES}
     )
