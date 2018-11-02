@@ -46,9 +46,9 @@ class DateConan(ConanFile):
             raise Exception("Date is not working on Windows yet.")
 
     def requirements(self):
+        self.requires("libcurl/7.56.1@bincrafters/stable")
         self.requires("OpenSSL/1.0.2n@conan/stable")
-        if not self.options.use_system_tz_db:
-            self.requires("libcurl/7.56.1@bincrafters/stable")
+        self.requires("zlib/1.2.11@conan/stable")
 
     def source(self):
         self.run("git clone https://github.com/HowardHinnant/date.git")
