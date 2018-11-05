@@ -9,11 +9,10 @@ import shutil
 
 class DateConan(ConanFile):
     name = "date"
-    version = "2.4.2-dm1"
+    version = "4b46deb"
     description = "A date and time library based on the C++11/14/17 <chrono> header"
-    url = "https://github.com/bincrafters/conan-date"
+    url = "https://github.com/ess-dmsc/conan-date"
     homepage = "https://github.com/HowardHinnant/date"
-    author = "Bincrafters <bincrafters@gmail.com>"
     license = "MIT"
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt", "date-config.cmake"]
@@ -33,8 +32,6 @@ class DateConan(ConanFile):
         "use_tz_db_in_dot=False",
         "disable_string_view=False",
     )
-    _source_subfolder = "source_subfolder"
-    _build_subfolder = "build_subfolder"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -52,13 +49,12 @@ class DateConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/HowardHinnant/date.git")
-        with tools.chdir("./{}".format(self.name)):
+
+        with tools.chdir(os.path.join(self.source_folder, self.name)):
             self.run("git checkout 54e8516af223670b75d7a17c2538c6e6d0843c1f .")
-            self._source_subfolder = os.getcwd()
 
     def _configure_cmake(self):
         cmake = CMake(self)
-
         cmake.configure(source_dir=self.name, build_dir=".")
         return cmake
 
@@ -77,9 +73,9 @@ class DateConan(ConanFile):
             cmake.build(build_dir=".")
 
     def package(self):
-        self.copy(pattern="LICENSE*", dst="licenses", src=self._source_subfolder)
-
-        include_folder = os.path.join(self._source_subfolder, "include")
+        src_folder = os.path.join(self.source_folder, self.name)
+        self.copy(pattern="LICENSE*", dst="licenses", src=src_folder)
+        include_folder = os.path.join(src_folder, "include")
         self.copy(pattern="*", dst="include", src=include_folder)
         self.copy(pattern="*.dll", dst="bin", keep_path=False)
         self.copy(pattern="*.lib", dst="lib", keep_path=False)
