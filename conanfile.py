@@ -36,6 +36,8 @@ class DateConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             self.options.remove("fPIC")
+        if self.settings.os == "Macos":
+            self.options["libcurl"].darwin_ssl = False
 
     def configure(self):
         # FIXME: It's not working on Windows
