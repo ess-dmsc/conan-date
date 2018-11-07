@@ -3,86 +3,100 @@
 
 from conans import ConanFile, CMake, tools
 import os
+from conans.util import files
 import shutil
 
 
 class DateConan(ConanFile):
-    version = "2.4"
     name = "date"
+    version = "4b46deb"
+    description = "A date and time library based on the C++11/14/17 <chrono> header"
+    url = "https://github.com/ess-dmsc/conan-date"
+    homepage = "https://github.com/HowardHinnant/date"
     license = "MIT"
-    url = "https://github.com/ess-dmsc/date"
-    description = "Date and time tools included the C++20 working draft"
-
-    src_version = "2.4"
-    src_url = "https://github.com/HowardHinnant/date"
-    # SHA256 Checksum for this versioned release (.tar.gz)
-    # NOTE: This should be updated every time the version is updated
-    archive_sha256 = "549c3120fe8eaaab7f28946e2430fb0d3d4b40b843a5ea52b78dba49795c7e05"
-
-    exports = ["LICENSE.md", "FindDate.cmake"]
+    exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt", "date-config.cmake"]
-
-    settings = "os", "arch", "compiler", "build_type"
-    requires = (
-        "libcurl/7.56.1@bincrafters/stable",
-        "OpenSSL/1.0.2n@conan/stable",
-        "zlib/1.2.11@conan/stable"
-    )
-    options = {"shared": [True, False]}
-
-    # The folder name when the *.tar.gz release is extracted
-    folder_name = name + "-%s" % src_version
-    # The name of the archive that is downloaded from Github
-    archive_name = "%s.tar.gz" % folder_name
-    # The temporary build diirectory
-    build_dir = "./%s/build" % folder_name
-
-    default_options = ("shared=True",)
     generators = "cmake"
+    settings = "os", "arch", "compiler", "build_type"
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "use_system_tz_db": [True, False],
+        "use_tz_db_in_dot": [True, False],
+        "disable_string_view": [True, False],
+    }
+    default_options = (
+        "shared=True",
+        "fPIC=True",
+        "use_system_tz_db=True",
+        "use_tz_db_in_dot=False",
+        "disable_string_view=False",
+    )
 
-    def configure(self):
-        self.requires.add("libcurl/7.56.1@bincrafters/stable", private=False)
+    def config_options(self):
+        if self.settings.os == "Windows":
+            self.options.remove("fPIC")
         if self.settings.os == "Macos":
             self.options["libcurl"].darwin_ssl = False
 
+    def configure(self):
+        # FIXME: It's not working on Windows
+        if self.settings.os == "Windows":
+            raise Exception("Date is not working on Windows yet.")
+
+    def requirements(self):
+        self.requires("libcurl/7.56.1@bincrafters/stable")
+        self.requires("OpenSSL/1.0.2n@conan/stable")
+        self.requires("zlib/1.2.11@conan/stable")
+
     def source(self):
-        tools.download(
-            "{0}/archive/v{1}.tar.gz".format(self.src_url, self.src_version),
-            self.archive_name
-        )
-        tools.check_sha256(
-            self.archive_name,
-            self.archive_sha256
-        )
-        tools.unzip(self.archive_name)
-        os.unlink(self.archive_name)
+        self.run("git clone https://github.com/HowardHinnant/date.git")
 
-        os.rename(os.path.join(self.folder_name, "CMakeLists.txt"),
-                  os.path.join(self.folder_name, "CMakeLists_original.txt"))
-        shutil.copy("CMakeLists.txt", os.path.join(self.folder_name, "CMakeLists.txt"))
-        shutil.copy("date-config.cmake", os.path.join(self.folder_name, "date-config.cmake"))
+        with tools.chdir(os.path.join(self.source_folder, self.name)):
+            self.run("git checkout 54e8516af223670b75d7a17c2538c6e6d0843c1f .")
 
-    def configure_cmake(self):
+    def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["ENABLE_DATE_TESTING"] = "OFF"
-        cmake.configure(source_folder=self.folder_name, build_folder="build")
+        cmake.configure(source_dir=self.name, build_dir=".")
         return cmake
 
     def build(self):
-        cmake = self.configure_cmake()
-        cmake.build()
+        files.mkdir("./{}/build".format(self.name))
+        shutil.copyfile(
+            "conanbuildinfo.cmake", "./{}/build/conanbuildinfo.cmake".format(self.name)
+        )
+        with tools.chdir("./{}/build".format(self.name)):
+            cmake = CMake(self)
+            cmake.definitions["ENABLE_DATE_TESTING"] = False
+            cmake.definitions["USE_SYSTEM_TZ_DB"] = self.options.use_system_tz_db
+            cmake.definitions["USE_TZ_DB_IN_DOT"] = self.options.use_tz_db_in_dot
+            cmake.definitions["DISABLE_STRING_VIEW"] = self.options.disable_string_view
+            cmake.configure(source_dir="..", build_dir=".")
+            cmake.build(build_dir=".")
 
     def package(self):
-        self.copy(pattern="LICENSE*", dst="licenses", src=self.folder_name)
-
-        include_folder =  os.path.join(self.folder_name, "include")
+        src_folder = os.path.join(self.source_folder, self.name)
+        self.copy(pattern="LICENSE*", dst="licenses", src=src_folder)
+        include_folder = os.path.join(src_folder, "include")
         self.copy(pattern="*", dst="include", src=include_folder)
         self.copy(pattern="*.dll", dst="bin", keep_path=False)
         self.copy(pattern="*.lib", dst="lib", keep_path=False)
         self.copy(pattern="*.a", dst="lib", keep_path=False)
         self.copy(pattern="*.so*", dst="lib", keep_path=False)
         self.copy(pattern="*.dylib", dst="lib", keep_path=False)
-        self.copy(pattern="date-config.cmake", dst="lib/cmake/date-"+self.version, keep_path=False)
+        self.copy(
+            pattern="date-config.cmake",
+            dst="lib/cmake/date-" + self.version,
+            keep_path=False,
+        )
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+        if self.settings.os == "Linux":
+            self.cpp_info.libs.append("pthread")
+        use_system_tz_db = 0 if self.options.use_system_tz_db else 1
+        defines = [
+            "USE_AUTOLOAD={}".format(use_system_tz_db),
+            "HAS_REMOTE_API={}".format(use_system_tz_db),
+        ]
+        self.cpp_info.defines.extend(defines)
