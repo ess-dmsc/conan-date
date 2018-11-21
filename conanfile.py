@@ -54,6 +54,7 @@ class DateConan(ConanFile):
 
         with tools.chdir(os.path.join(self.source_folder, self.name)):
             self.run("git checkout 54e8516af223670b75d7a17c2538c6e6d0843c1f .")
+            tools.patch(os.path.join(self.source_folder, "to_14.patch"))
 
     def _configure_cmake(self):
         cmake = CMake(self)
