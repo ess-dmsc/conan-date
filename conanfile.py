@@ -29,6 +29,8 @@ class DateConan(ConanFile):
             self.options.remove("fPIC")
             self.options.remove("use_system_tz_db")
             self.options.remove("use_tz_db_in_dot")
+        if self.settings.os == "Macos":
+            self.options["libcurl"].darwin_ssl = False
 
     def configure(self):
         compiler_version = Version(self.settings.compiler.version.value)
