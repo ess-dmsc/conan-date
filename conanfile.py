@@ -38,13 +38,12 @@ class DateConan(ConanFile):
             raise ConanInvalidConfiguration("date requires Apple Clang 8 and higher")
 
     def requirements(self):
-        if self.settings.os == "Windows" or not self.options.use_system_tz_db:
-            self.requires("libcurl/7.56.1@bincrafters/stable")
+        self.requires("libcurl/7.56.1@bincrafters/stable")
 
     def source(self):
         self.run("git clone https://github.com/HowardHinnant/date.git " + self._source_subfolder)
 
-        with tools.chdir(os.path.join(self.source_folder, self.name)):
+        with tools.chdir(self._source_subfolder):
             self.run("git checkout " + self.version + " .")
             
         tools.replace_in_file(os.path.join(self._source_subfolder, 'CMakeLists.txt'),
