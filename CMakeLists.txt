@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 2.8.12)
-
+cmake_minimum_required(VERSION 3.0.2)
 project(cmake_wrapper)
 
-include(${CMAKE_BINARY_DIR}/../conanbuildinfo.cmake)
+include(conanbuildinfo.cmake)
 conan_basic_setup()
 
-include(CMakeLists_original.txt)
+add_subdirectory("source_subfolder")
 
+if (WIN32 AND BUILD_SHARED_LIBS)
+    target_compile_definitions( tz PRIVATE DATE_BUILD_DLL=1 )
+endif(WIN32 AND BUILD_SHARED_LIBS)
