@@ -26,7 +26,7 @@ node {
   checkout scm
 
   builders['macOS'] = get_macos_pipeline()
-  builders['windows10'] = get_win10_pipeline()
+  // builders['windows10'] = get_win10_pipeline()
   parallel builders
 
   // Delete workspace when build is done.

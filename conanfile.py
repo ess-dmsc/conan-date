@@ -33,6 +33,10 @@ class DateConan(ConanFile):
             self.options["libcurl"].darwin_ssl = False
 
     def configure(self):
+        # FIXME: It's not working on Windows
+        if self.settings.os == "Windows":
+            raise Exception("Date is not working on Windows yet.")
+
         compiler_version = Version(self.settings.compiler.version.value)
         if self.settings.compiler == "Visual Studio" and compiler_version < "14":
             raise ConanInvalidConfiguration("date requires Visual Studio 2015 and higher")
