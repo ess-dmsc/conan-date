@@ -74,13 +74,6 @@ def get_macos_pipeline() {
             --settings date:build_type=Debug \
             --options date:shared=True"
         }  // stage
-
-        stage("macOS: Upload") {
-          sh "upload_conan_package.sh conanfile.py \
-            ${conan_remote} \
-            ${conan_user} \
-            ${conan_pkg_channel}"
-        }  // stage
       }  // dir
     }  // node
   }  // return
@@ -112,27 +105,14 @@ def get_win10_pipeline() {
         }  // stage
 
         stage("win10: Package") {
-          //bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
-          //  create . ${conan_user}/${conan_pkg_channel} \
-          //  --settings date:build_type=Release \
-          //  --options date:shared=False \
-          //  --build=outdated"""
-
           bat """C:\\Users\\dmgroup\\AppData\\Local\\Programs\\Python\\Python36\\Scripts\\conan.exe \
             create . ${conan_user}/${conan_pkg_channel} \
             --settings date:build_type=Release \
             --options date:shared=True \
             --build=outdated"""
         }  // stage
-
-        stage("win10: Upload") {
-          //sh "upload_conan_package.sh conanfile.py \
-          //  ${conan_remote} \
-           // ${conan_user} \
-           // ${conan_pkg_channel}"
-        }  // stage
       }  // dir
-      }
+      }  // ws
     }  // node
   }  // return
 }  // def
