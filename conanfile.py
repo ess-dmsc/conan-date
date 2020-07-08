@@ -44,7 +44,7 @@ class DateConan(ConanFile):
             raise ConanInvalidConfiguration("date requires Apple Clang 8 and higher")
 
     def requirements(self):
-        self.requires("libcurl/7.56.1@bincrafters/stable")
+        self.requires("libcurl/7.71.0")
 
     def source(self):
         self.run("git clone https://github.com/HowardHinnant/date.git " + self._source_subfolder)
