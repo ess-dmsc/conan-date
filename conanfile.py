@@ -9,7 +9,7 @@ import os
 
 class DateConan(ConanFile):
     name = "date"
-    version = "27d1e1e"
+    version = "aaaaaaa"
     description = "A date and time library based on the C++11/14/17 <chrono> header"
     url = "https://github.com/ess-dmsc/conan-date"
     homepage = "https://github.com/HowardHinnant/date"
